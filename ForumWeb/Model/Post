@@ -1,0 +1,31 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ForumWeb.Models
+{
+    //帖子模型
+    public class Post
+    {
+
+        //帖子ID
+        public int Id { get; set; }
+        
+        //帖子标题
+        public string Title { get; set; }
+        //帖子内容
+        public string Content { get; set; }
+        //发布时间 
+        public DateTime Created { get; set; }
+        //发帖人
+        public virtual PostReply PostReply { get; set; }
+
+        public virtual AppDbContext User { get; set; }
+        
+        public virtual Forums Forum { get; set; }
+
+        //public virtual IEnumerable<PostReply> Replies { get; set; }
+    }
+}
