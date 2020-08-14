@@ -1,0 +1,83 @@
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ForumWeb.Models
+{
+    public static class ModelBuilderExtensions
+    {
+        public static void Seed(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Forums>().HasData(
+                new Forums
+                {
+                    Id=1,
+                    Title="欢迎使用FOR论坛",
+                    Description="通知&资讯",
+                    Created= DateTime.Now,
+                }
+                );
+            modelBuilder.Entity<Forums>().HasData(
+                new Forums
+                {
+                    Id = 2,
+                    Title = "使用FOR论坛的注意事项",
+                    Description = "通知&资讯",
+                    Created = DateTime.Now,
+                }
+                );
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id=1,
+                    Name="Braum",
+                    Pwd="summer22.",
+                    Email="1392122452@qq.com",
+                    Phone="13187454162",
+                }
+                );
+                
+            modelBuilder.Entity<Post>().HasData(
+                new Post
+                {
+                    Id=1,
+                    Title= "欢迎使用FOR论坛",
+                    Content="欢迎使用FOR论坛，在使用途中有任何问题请和管理员联系，邮箱地址：1392122452@qq.com,谢谢您的参与！",
+                    Created=DateTime.Now,     
+                }
+                );
+            modelBuilder.Entity<Post>().HasData(
+                new Post
+                {
+                    Id = 2,
+                    Title = "使用FOR论坛的注意事项",
+                    Content = "访问者可以张贴评论、意见及其他内容，以及提出建议、主意、意见、问题或其他信息，" +
+                    "只要内容不是非法、淫秽、威胁、诽谤、侵犯隐私、侵犯知识产权或以其他形式对第三者构成伤害或侵犯或令公众讨厌，" +
+                    "也不包含软件病毒、政治宣传、商业招揽、连锁信、大宗邮件或任何形式的“垃圾邮件”。" +
+                    "您不可以使用虚假的电子邮件地址、冒充任何他人或实体或以其它方式对卡片或其他内容的来源进行误导。" +
+                    "本网站保留清除或编辑这些内容的权利（但非义务），但不对所张贴的内容进行经常性的审查。" +
+                    "如果您确实张贴了内容或提交了材料，除非我们有相反指示，您授予本网站及其关联公司非排他的、免费的、永久的、" +
+                    "不可撤销的和完全的再许可权而在全世界范围内任何媒体上使用、复制、修改、改写、出版、翻译、创作衍生作品、" +
+                    "分发和展示这样的内容。您授予本网站及其关联公司和被转许可人使用您所提交的与这些内容有关的名字的权利，" +
+                    "如果他们选择这样做的话。您声明并担保您拥有或以其它方式控制您所张贴内容的权利，" +
+                    "内容是准确的，对您所提供内容的使用不违反本政策并不会对任何人和实体造成伤害。" +
+                    "您声明并保证对于因您所提供的内容引起的对本网站或其关联公司损害进行赔偿。" +
+                    "本网站有权监控和编辑或清除任何活动或内容。本网站对您或任何第三方所张贴的内容不承担责任。 ",
+                    Created = DateTime.Now,
+
+                }
+                );
+            modelBuilder.Entity<Administrator>().HasData(
+                new User
+                {
+                    Id = 1,
+                    Name = "admin",
+                    Pwd = "summer22.",
+                    
+                }
+                );
+        }
+    }
+}
