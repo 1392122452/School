@@ -1,0 +1,85 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ForumWeb.Models
+{
+    public class MokeForumRepository : IForumRepository
+    {
+        private List<Forums> _forumsList;
+
+        /// <summary>
+        /// 添加帖子接口
+        /// </summary>
+        /// <param name="forums"></param>
+        /// <returns></returns>
+        public Forums Add(Forums forums)
+        {
+            forums.Id = _forumsList.Max(s => s.Id) + 1;
+            _forumsList.Add(forums);
+            return forums;
+           
+        }
+
+        /// <summary>
+        /// 删除帖子接口，通过ID查询删除
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Forums Delete(int id)
+        {
+            //通过帖子ID查询是否存在
+            Forums forums = _forumsList.FirstOrDefault(s=>s.Id==id);
+            //当存在时就移除帖子
+            if (forums!=null)
+            {
+                _forumsList.Remove(forums);
+            }
+            return forums;
+            
+        }
+
+        /// <summary>
+        /// 查询所有帖子接口
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Forums> GetAllForums()
+        {
+            return _forumsList;
+           
+        }
+
+        /// <summary>
+        /// 通过帖子ID查询帖子信息接口
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Forums GetForums(int id)
+        {
+            return _forumsList.FirstOrDefault(a=>a.Id==id);
+            
+        }
+
+        /// <summary>
+        /// 更新帖子内容信息
+        /// </summary>
+        /// <param name="UpdateForums"></param>
+        /// <returns></returns>
+        public Forums Update(Forums UpdateForums)
+        {
+            //将帖子ID赋值给更新后的ID
+            Forums forums = _forumsList.FirstOrDefault(s=>s.Id==UpdateForums.Id);
+            //然后如果不为空则覆盖原先的内容
+            if (forums!=null)
+            {
+                forums.Id = UpdateForums.Id;
+                forums.Title = UpdateForums.Title;
+                forums.Description = UpdateForums.Description;
+                forums.Created = UpdateForums.Created;
+                forums.Picture = UpdateForums.Picture;
+            }
+            return forums;
+        }
+    }
+}
