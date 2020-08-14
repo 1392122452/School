@@ -1,0 +1,47 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ForumWeb.Models
+{
+    public interface IPostRepository
+    {
+        /// <summary>
+        /// 获取帖子所有信息
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<Post> GetAllPost();
+
+        /// <summary>
+        /// 通过ID获取帖子信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Post GetPost(int id);
+
+        
+        /// <summary>
+        /// 添加帖子
+        /// </summary>
+        /// <param name="post"></param>
+        /// <returns></returns>
+        Post Add(Post post);
+
+        /// <summary>
+        /// 删除帖子
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Post Delete(int id);
+
+        /// <summary>
+        /// 更新帖子信息
+        /// </summary>
+        /// <param name="UpdatePost"></param>
+        /// <returns></returns>
+        Post Update(Post UpdatePost);
+
+        
+    }
+}
