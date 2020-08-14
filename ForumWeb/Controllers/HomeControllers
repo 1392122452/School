@@ -1,0 +1,347 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using ForumWeb.Models;
+using Microsoft.AspNetCore.Hosting;
+using ForumWeb.ViewModel;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.IO;
+using System.Web;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+
+namespace ForumWeb.Controllers
+{
+    public class HomeController : Controller
+    {
+        private readonly AppDbContext context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        private readonly IForumRepository _forumRepository;
+        private readonly IHostingEnvironment _hostingEvironment;
+        private readonly IPostRepository _postRepository;
+        private readonly IPostReplyRepository _postReplyRepository;
+        private readonly IUserRepository _userRepository;
+
+        
+
+        //依赖注入
+        public HomeController(IForumRepository forumRepository, IHostingEnvironment hostingEnvironment,
+            IPostRepository postRepository, IPostReplyRepository postReplyRepository, IUserRepository userRepository,
+            AppDbContext context, IHttpContextAccessor httpContextAccessor)
+        {
+            this.context = context;
+            _forumRepository = forumRepository;
+            _hostingEvironment = hostingEnvironment;
+            _postRepository = postRepository;
+            _postReplyRepository = postReplyRepository;
+            _userRepository = userRepository;
+
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+
+        //选择登录
+        public IActionResult SelectLogin()
+        {
+            ViewData["Title"] = "FOR论坛登录";
+            return View();
+        }
+
+        //管理员主页面
+        public IActionResult AdmIndex()
+        {
+            //查看所有的帖子信息
+            IEnumerable<Post> posts = _postRepository.GetAllPost();
+            ViewData["Title"]= "管理员界面";
+            
+            return View(posts);
+        }
+
+
+        //用户主页面
+        public IActionResult Index()
+        {
+            //查看所有的帖子信息
+            IEnumerable<Forums> forums = _forumRepository.GetAllForums();
+            
+            bool hasUserId = Request.Cookies.TryGetValue("UserId", out string userId);
+            bool hasPassword = Request.Cookies.TryGetValue("Pwd", out string password);
+            User user1 = _userRepository.Load(Convert.ToInt32(userId));
+            if (hasUserId)
+            {
+                //通过userId和Repository获得User对象
+                if (user1.Pwd == password)
+                {
+                    //把User对象的Name值赋给ViewData
+                    ViewData["UserName"] = user1.Name;
+                }
+            }
+
+            return View(forums);
+        }
+
+       
+        //帖子详细展示
+        public IActionResult Data(int id)
+        {
+            //IEnumerable<PostReply> postReplies = _postReplyRepository.GetAllPostReply();
+            IEnumerable<Post> posts = _postRepository.GetAllPost();
+            Post post = _postRepository.GetPost(id);
+            PostReply postReply = _postReplyRepository.GetPostReply(id);
+
+            HomeDataViewModel homeDataViewModel = new HomeDataViewModel()
+            { 
+                Post = post,
+                PostReply = postReply,
+                Pagetitle = "帖子列表",
+            };
+          
+            bool hasUserId = Request.Cookies.TryGetValue("UserId", out string userId);
+            bool hasPasswor= Request.Cookies.TryGetValue("Pwd", out string password);
+            User user1 = _userRepository.Load(Convert.ToInt32(userId));
+            if (hasUserId)
+            {
+                //通过userId和Repository获得User对象
+                if (user1.Pwd == password)
+                {
+                    //把User对象的Name值赋给ViewData
+                    ViewData["UserName"] = user1.Name;
+                }
+            }
+
+            return View(posts);
+        }
+
+        [HttpGet]
+        //用户登录
+        public IActionResult Login()
+        {
+            ViewData["Title"] = "FOR论坛登录";
+           
+            return View();
+        }
+
+        [HttpPost]
+        //用户登录功能
+        public IActionResult Login(string Name, string Pwd)
+        { 
+            
+            var name = Name;
+            var pwd = Pwd;
+            var loginUser = context.Users.FirstOrDefault(q => q.Name == Name && q.Pwd == pwd);
+            if (loginUser != null)
+            {      
+                var claims = new[]
+                {
+                    new Claim("UserTy","manage"),
+                    new Claim("UserId",loginUser.Id.ToString()),
+                };
+                ClaimsPrincipal user = new ClaimsPrincipal(new
+                    ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
+                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, user).Wait();
+
+                //生成UserId和Pwd的Cookie
+                Response.Cookies.Append("UserId", loginUser.Id.ToString());
+                Response.Cookies.Append("Pwd", loginUser.Pwd.ToString());
+
+                //HttpContext.Session.SetInt32(loginUser.Name, loginUser.Id);
+                //HttpContext.Session.SetString(loginUser.Name,loginUser.Name);
+
+
+                return Json(new MsgJson { success = true, data = "manage" });  
+            }
+            return Json(new MsgJson { success = false, message = "账号或密码错误" });
+
+           
+        }
+
+        
+        //管理员登录
+        public IActionResult ADMlogin()
+        {
+            ViewData["Title"] = "管理员登录";
+            return View();
+        }
+        [HttpPost]
+        //管理员登录功能
+        public IActionResult ADMlogin(string Name,string Pwd)
+        {
+            var name = Name;
+            var pwd = Pwd;
+            var loginUser = context.Administrators.FirstOrDefault(q => q.Name == Name && q.Pwd == pwd);
+            if (loginUser != null)
+            {
+                var claims = new[]
+                {
+                    new Claim("UserTy","manage"),
+                    new Claim("UserId",loginUser.Id.ToString()),
+                };
+                ClaimsPrincipal user = new ClaimsPrincipal(new
+                    ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
+                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, user).Wait();
+                return Json(new MsgJson { success = true, data = "manage" });
+            }
+            return Json(new MsgJson { success = false, message = "账号或密码错误" });
+        }
+
+        [HttpGet]
+        public ActionResult Register()
+        {
+            ViewData["Title"] = "FOR论坛注册";
+            return View();
+        }
+
+        [HttpPost]
+        //注册功能
+        public ActionResult Register(User user)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _userRepository.Add(user);
+                    context.SaveChanges();
+                    TempData["msg"] = "注册成功，请登录！";
+                    return RedirectToAction("Login", "Home");
+                }
+                else 
+                {
+                    TempData["msg"] = "表单验证失败!";
+                }
+            }
+            
+            catch (Exception)
+            {
+                TempData["msg"] = "注册失败!!";
+            }
+            return View();
+        }
+        
+        /// <summary>
+        /// 将图片保存到指定路径中，并返回唯一值
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private string ProcessUploadedFile(ForumRegisterViewModel model) 
+        {
+
+            string uniqueFileName = null;
+            if (model.Photos.Count > 0)
+            {
+                foreach (var photo in model.Photos)
+                {
+                    //将图片上传到WWWROOT的img文件夹中
+                    //要获取到wwwroot文件夹的路径，我们需要注入ASP.NET Core提供的HostingEnvironment服务
+                    //通过HostingEnvironment服务获取到wwwroot文件夹路径
+                    string uploadsFolder = Path.Combine(_hostingEvironment.WebRootPath, "img");
+                    //为了保证文件名是唯一，在文件夹名后加一个新的GUID值和一个下划线
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + photo.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    //使用了非托管资源，所以需要手动进行释放
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        //使用IFormFile接口提供的CopyTo()方法将文件复制到wwwroot/img文件夹中
+                        photo.CopyTo(fileStream);
+                    }
+                    // photo.CopyTo(new FileStream(filePath, FileMode.Create));
+                }
+            }
+            return uniqueFileName;
+        }
+
+        //用户个人信息查看
+        public IActionResult Details(int id)
+        {
+            bool hasUserId = Request.Cookies.TryGetValue("UserId", out string userId);
+            bool hasPassword = Request.Cookies.TryGetValue("Pwd", out string password);
+            User user1 = _userRepository.Load(Convert.ToInt32(userId));
+            if (hasUserId)
+            {
+                //通过userId和Repository获得User对象
+                if (user1.Pwd == password)
+                {
+                    //把User对象的Name值赋给ViewData
+                    ViewData["UserName"] = user1.Name;
+                }
+            }
+            if (userId == null)
+            {
+                return NotFound();
+            }
+            if (user1 == null)
+            {
+                return NotFound();
+            }
+
+            return View(user1);
+        }
+
+        //用户修改个人信息
+        public async Task<IActionResult> Edit(int? id)
+        {
+            bool hasUserId = Request.Cookies.TryGetValue("UserId", out string userId);
+            bool hasPassword = Request.Cookies.TryGetValue("Pwd", out string password);
+            User user1 = _userRepository.Load(Convert.ToInt32(userId));
+            if (hasUserId)
+            {
+                //通过userId和Repository获得User对象
+                if (user1.Pwd == password)
+                {
+                    //把User对象的Name值赋给ViewData
+                    ViewData["UserName"] = user1.Name;
+                }
+            }
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+
+        
+        
+        //帖子回复功能
+        [HttpPost]
+        public async Task<IActionResult> Data([Bind("Id,Content,Created")] PostReply postRepl,int id)
+        {
+            //IEnumerable<PostReply> postReplies = _postReplyRepository.GetAllPostReply();
+            IEnumerable<Post> posts = _postRepository.GetAllPost();
+
+            Post post = _postRepository.GetPost(id);
+            PostReply postReply = _postReplyRepository.GetPostReply(id);
+
+            if (ModelState.IsValid)
+            {
+                context.PostReplies.Add(postReply);
+                await context.SaveChangesAsync();
+
+                return RedirectToAction("Data",new { id = postReply.Id });
+            }
+
+
+            HomeDataViewModel homeDataViewModel = new HomeDataViewModel()
+            {
+                Post=post,
+                PostReply = postReply,
+                Pagetitle = "帖子列表",
+            };
+          
+            return View(posts);
+        }
+
+    }
+}
