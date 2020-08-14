@@ -1,0 +1,57 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ForumWeb.Models
+{
+    public class SQLPostRepository : IPostRepository
+    {
+        private readonly AppDbContext context;
+
+        public SQLPostRepository(AppDbContext context)
+        {
+            this.context = context;
+        }
+        //在数据库添加帖子
+        public Post Add(Post post)
+        {
+            context.Posts.Add(post);
+            context.SaveChanges();
+            return post;
+        }
+        //从数据库删除帖子
+        public Post Delete(int id)
+        {
+            Post post = context.Posts.Find(id);
+            if (post!=null)
+            {
+                context.Posts.Remove(post);
+                context.SaveChanges();
+            }
+            return post;
+        }
+        //获取帖子全部信息
+        public IEnumerable<Post> GetAllPost()
+        {
+            return context.Posts;
+        }
+
+        //根据ID查询帖子
+        public Post GetPost(int id)
+        {
+            return context.Posts.Find(id);
+        }
+
+        //更新帖子内容
+        public Post Update(Post UpdatePost)
+        {
+            var post = context.Posts.Attach(UpdatePost);
+            post.State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            context.SaveChanges();
+            return UpdatePost;
+        }
+
+        
+    }
+}
