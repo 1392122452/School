@@ -1,0 +1,46 @@
+﻿@model ForumWeb.ViewModel.HomeDataViewModel
+
+@{
+    ViewBag.Title = "帖子详情";
+}
+    <head>
+
+        <link rel="stylesheet" href="~/css/site.css" />
+
+    </head>
+
+<div class="card-deck">
+   
+
+        <div  class="card m-3">
+            <div class="card-header">
+                <h3>ID：@Model.Post.Id</h3>
+                <h3>标题：@Model.Post.Title</h3>
+            </div>
+
+            <div  class="card-footer text-center">
+                <ul style="list-style-type:none">
+                    <li>
+                        <div class="test" style="width:1650px;">
+                            <textare  row="1" clos="100">
+                                <h4>@Model.Post.Content</h4>
+                            </textare>
+                        </div>
+                    </li>
+                    <li>
+                        <h4>发布日期：@Model.Post.Created</h4>
+                    </li>
+                    <li>
+                        <h4>发布人：@Model.Post.User.Users</h4>
+
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card-footer text-center">
+                <a asp-controller="Home" asp-action="AdmIndex" class="btn btn-primary">返回</a>
+                <a asp-controller="Home" asp-action="Reply" class="btn btn-primary">回帖</a>
+            </div>
+        </div>
+    
+</div>

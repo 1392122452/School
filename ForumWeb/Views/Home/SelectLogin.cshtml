@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewData["Title"] = "选择登录类型";
+    Layout = null;
+}
+    <head>
+        <link href="~/css/login/style.css" media="screen" rel="stylesheet" />
+        <link href="~/css/login/reset.css" type="text/css" rel="stylesheet" />
+    </head>
+
+    <div class="login ">
+        <div class="login-top login-center" style="margin-left:70px;font-size:21px;margin-top:50px;">
+            @ViewData["Title"]
+        </div>
+
+        <div  id="btnLogin" class="login-button" style="margin-top:50px;">
+            <a asp-controller="Home" asp-action="Login" id="btnLogin" class="login-button" style="margin-top:100px;">用户登录</a>
+        </div>
+        
+        <div  id="btnLogin" class="login-button" style="margin-top:100px;">
+            <a asp-controller="Home" asp-action="ADMlogin" id="btnLogin" class="login-button" style="margin-top:100px;">管理员登录</a>
+        </div>
+
+        <div id="btnLogin" class="login-button" style="margin-top:100px;">
+            <a asp-controller="Home" asp-action="Register" id="btnLogin" class="login-button" style="margin-top:100px;">用户注册</a>
+        </div>
+        
+    </div>
+

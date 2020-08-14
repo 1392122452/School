@@ -1,0 +1,106 @@
+﻿@model ForumWeb.ViewModel.HomeDataViewModel
+
+@{
+    ViewBag.Title = "帖子详情";
+}
+
+<link rel="stylesheet" href="~/css/site.css" />
+<link href="~/css/login/style.css" media="screen" rel="stylesheet" />
+<link href="~/css/login/reset.css" type="text/css" rel="stylesheet" />
+
+<style type="text/css">
+    .test1 {
+        border: 2px solid black; /*设置边框1px，实线，边框线色为#a0b3d6 */
+        width: 1650px;
+        height: 150px;
+        font-size: 14px;
+        padding: 4px;
+        color: #333;
+        outline: 0; /* 当元素获得焦点的时候，焦点框为0.去掉虚线框（或高亮框）*/
+    }
+
+    .input {
+        width: 1650px;
+        min-height: 200px;
+        padding: 4px;
+        outline: 0; /* 当元素获得焦点的时候，焦点框为0.去掉虚线框（或高亮框）*/
+    }
+</style>
+
+
+<div class="card-deck">
+
+    <div class="card m-3">
+        <div class="card-header">
+            <h3>ID：@Html.DisplayFor(model => Model.Post.Id)</h3>
+            <h3>标题：@Html.DisplayFor(model => Model.Post.Title)</h3>
+        </div>
+
+        <div class="card-footer text-center">
+            <ul style="list-style-type:none">
+                <li>
+                    <div class="test1">
+                        <textare row="1" clos="100">
+                            <h4>@Html.DisplayFor(model => Model.Post.Content)</h4>
+                        </textare>
+                    </div>
+                </li>
+                <li>
+                    <h4>发布日期：@Html.DisplayFor(model => Model.Post.Created)</h4>
+                </li>
+                <li>
+                    <h4>发布人：@Html.DisplayFor(model => Model.Post.User.Users)</h4>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="card-footer text-center">
+            <h6>这里是评论区</h6>
+
+            @if (Html.DisplayNameFor(model => model.PostReply.Id) != null)
+            {
+                <div class="card-header">
+                    <h3>ID：@Html.DisplayFor(model => Model.PostReply.Id)</h3>
+
+                </div>
+
+                <div class="card-footer text-center">
+                    <ul style="list-style-type:none">
+                        <li>
+                            <div class="test1">
+
+                                <textare row="1" clos="100">
+                                    <h4>@Html.DisplayFor(model => Model.PostReply.Content)</h4>
+                                </textare>
+                            </div>
+                        </li>
+                        <li>
+                            <h4>发布日期：@Html.DisplayFor(model => Model.PostReply.Created)</h4>
+                        </li>
+                        <li>
+                            <h4>发布人：@Html.DisplayFor(model => Model.PostReply.User.Name)</h4>
+                        </li>
+
+                    </ul>
+                </div>
+
+            }
+            else
+            {
+                <h1>1</h1>
+            }
+            <div class="form-group row">
+                <div class=" col-sm-10">
+                    <textare row="10" clos="100">
+                        <input asp-for="PostReply" class="form-control input" placeholder="请留下你的评论~" />
+                    </textare>
+                </div>
+            </div>
+
+            <a asp-controller="Home" asp-action="Data" class="btn btn-primary">回帖</a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary">返回</a>
+
+        </div>
+    </div>
+</div>

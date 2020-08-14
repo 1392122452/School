@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Privacy Policy";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this page to detail your site's privacy policy.</p>
+<div class="card-deck">
+    @foreach (var forums in Model)
+    {
+        var photoPath = "~/img/" + (forums.Picture ?? "1.png");
+        <div class="card m-3">
+            <div class="card-header">
+                <h3>@forums.Title</h3>
+            </div>
+            <img class="card-img-top imagesThumbnail" src="@photoPath" asp-append-version="true" />
+            <div class="card-footer text-center">
+
+                <a asp-controller="Home" asp-action="Data" asp-route-id="@forums.Id" class="btn btn-primary ">查看</a>
+                <a asp-controller="Home" asp-action="Edit" asp-route-id="@forums.Id" class="btn btn-primary ">编辑</a>
+                <a asp-controller="Home" asp-action="Delete" asp-route-id="@forums.Id" class="btn btn-danger ">删除</a>
+            </div>
+        </div>
+    }
+
+</div>

@@ -1,0 +1,97 @@
+﻿
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta name="viewport" content="width=device-width, initial-scale=1.0" />*@
+    <title>@ViewData["Title"] - FOR论坛</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+
+</head>
+<body>
+
+    <script language="javaScript">
+        function showwenhou() {
+            now = new Date(), hour = now.getHours()
+            if (hour < 6) { document.write("凌晨好！") }
+            else if (hour < 9) { document.write("早上好！") }
+            else if (hour < 12) { document.write("上午好！") }
+            else if (hour < 14) { document.write("中午好！") }
+            else if (hour < 17) { document.write("下午好！") }
+            else if (hour < 19) { document.write("傍晚好！") }
+            else if (hour < 22) { document.write("晚上好！") }
+            else { document.write("夜里好！") }
+        }
+
+        
+    </script>
+
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+
+
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FOR论坛</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">主页</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Details">个人信息</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="right ">
+
+
+                    <ul class="navbar-nav ">
+
+                        @if (ViewData["UserName"] != null)
+                        {
+                            <li class="nav-item ">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Details">@ViewData["UserName"]</a>
+                                
+                            </li>
+                            <li class="nav-item ">
+                                <script type="text/javascript">showwenhou();</script>
+                            </li>
+
+                         }
+                         else
+                         {
+                            <li class="nav-item ">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Login">登录</a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Register">注册</a>
+                            </li>
+                         }
+
+                     </ul>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+    @RenderBody()
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2020 - FOR论坛 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

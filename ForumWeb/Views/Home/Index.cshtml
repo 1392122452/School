@@ -1,0 +1,49 @@
+﻿@model IEnumerable<ForumWeb.Models.Forums>
+
+
+@{
+    ViewBag.Title = "主页";
+
+    
+}
+<head>
+    <title>@ViewData["Title"] - FOR论坛</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+
+</head>
+
+<div class="card-deck">
+    @foreach (var forums in Model)
+    {
+        var photoPath = "~/img/" + (forums.Picture ?? "Welcome.jpg");
+        <div class="card m-3">
+            <div class="card-header">
+                <h3>@forums.Title</h3>
+            </div>
+
+            <div class="card-footer text-center">
+                <ul style="list-style-type:none">
+                    <li class="float-left m-3">
+                        <img class="card-img-top imagesThumbnail " src="@photoPath" asp-append-version="true" />
+                    </li>
+                    <li class=" float-left m-3">
+                        <h5>帖子ID：@forums.Id</h5>
+                    </li>
+                    <li class=" float-left m-3">
+                        <h5>标题：<a asp-controller="Home" asp-action="Data" asp-route-id="@forums.Id">@forums.Title</a></h5>
+                    </li>
+                    <li class=" float-left m-3">
+                        <h5>类型：@forums.Description</h5>
+                    </li>
+                    <li class="float-left m-3">
+                        <h5>发布时间：@forums.Created</h5>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    }
+
+</div>
+
+
