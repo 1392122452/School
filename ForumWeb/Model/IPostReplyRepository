@@ -1,0 +1,39 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ForumWeb.Models
+{
+    public interface IPostReplyRepository
+    {
+        /// <summary>
+        /// 获取回复帖子的所有信息
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<PostReply> GetAllPostReply();
+
+        /// <summary>
+        /// 通过帖子ID获取信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        PostReply GetPostReply(int id);
+
+        /// <summary>
+        /// 回复帖子
+        /// </summary>
+        /// <param name="postReply"></param>
+        /// <returns></returns>
+        PostReply Add(PostReply postReply);
+
+        /// <summary>
+        /// 删除回复的帖子
+        /// </summary>
+        /// <param name="postReply"></param>
+        /// <returns></returns>
+        PostReply Delete(int id);
+
+
+    }
+}
