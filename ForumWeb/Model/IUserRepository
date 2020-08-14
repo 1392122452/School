@@ -1,0 +1,43 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ForumWeb.Models
+{
+    public interface IUserRepository
+    {
+        /// <summary>
+        /// 通过ID获取用户信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        User GetUser(int id);
+
+       
+
+        /// <summary>
+        /// 获取用户所有信息
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<User> GetAllUser();
+
+        /// <summary>
+        /// 增加用户信息（注册）
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        User Add(User user);
+
+        /// <summary>
+        /// 更新用户信息
+        /// </summary>
+        /// <param name="UpdateUser"></param>
+        /// <returns></returns>
+        User Update(User UpdateUser);
+
+
+        User Load(int? id);
+
+    }
+}
