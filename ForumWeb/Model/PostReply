@@ -1,0 +1,24 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ForumWeb.Models
+{
+    //回复帖子模型
+    public class PostReply
+    {
+        //帖子ID
+        public int Id { get; set; }
+        //回复内容
+        public string Content { get; set; }
+        //回复时间
+        public DateTime Created { get; set; }
+        //回复用户
+        public virtual User User { get; set; }
+        //回复的帖子
+        //public virtual Post Post { get; set; }
+
+        //public virtual IEnumerable<Post> Posts { get; set; }
+    }
+}
