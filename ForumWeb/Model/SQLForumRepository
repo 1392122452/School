@@ -1,0 +1,30 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ForumWeb.Models
+{
+    public class SQLForumRepository : IForumRepository
+    {
+        //防止误操作修改了context的值
+        private readonly AppDbContext context;
+
+        public SQLForumRepository(AppDbContext context)
+        {
+            this.context = context;
+            
+        }
+        //获取数据库中所有帖子
+        public IEnumerable<Forums> GetAllForums()
+        {
+            return (IEnumerable<Forums>)context.Forums;
+        }
+        //通过ID查询帖子
+        public Forums GetForums(int id)
+        {
+            return context.Forums.Find(id);
+        }
+        
+    }
+}
