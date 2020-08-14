@@ -1,0 +1,56 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ForumWeb.Models
+{
+
+    public class SQLUserRepository : IUserRepository
+    {
+
+        private readonly AppDbContext context;
+
+        public SQLUserRepository(AppDbContext context)
+        {
+            this.context = context;
+        }
+        public User Add(User user)
+        {
+            context.Users.Add(user);
+            context.SaveChanges();
+            return user; 
+        }
+
+        public IEnumerable<User> GetAllUser()
+        {
+            return context.Users;
+        }
+
+        public User GetUser(int id)
+        {
+            return context.Users.Find(id);
+        }
+
+       
+        public User Load(int? id)
+        {
+            if (id != null)
+            {
+                return context.Users.Find(id);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public User Update(User UpdateUser)
+        {
+            var user = context.Users.Attach(UpdateUser);
+            user.State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            context.SaveChanges();
+            return UpdateUser;
+        }
+    }
+}
