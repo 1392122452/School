@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ForumWeb.Models
+{
+    public class SQLPostReplyRepository : IPostReplyRepository
+    {
+
+        private readonly AppDbContext context;
+
+        public SQLPostReplyRepository(AppDbContext context)
+        {
+            this.context = context;
+        }
+        public PostReply Add(PostReply postReply)
+        {
+            context.PostReplies.Add(postReply);
+            context.SaveChanges();
+            return postReply;
+        }
+
+        public PostReply Delete(int id)
+        {
+            PostReply postReply = context.PostReplies.Find(id);
+            if (postReply!=null)
+            {
+                context.PostReplies.Remove(postReply);
+                context.SaveChanges();
+            }
+            return postReply;
+        }
+
+        public IEnumerable<PostReply> GetAllPostReply()
+        {
+            _ = context.Posts;
+
+            return context.PostReplies;
+        }
+
+        public PostReply GetPostReply(int id)
+        {
+            return context.PostReplies.Find(id);
+        }
+
+       
+    }
+}
